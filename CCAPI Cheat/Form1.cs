@@ -20,6 +20,10 @@ namespace CCAPI_Cheat
         public Form1()
         {
             InitializeComponent();
+
+            this.cheatLineListView.Columns.Add("Opcode", 80, HorizontalAlignment.Left);
+            this.cheatLineListView.Columns.Add("Param1", 80, HorizontalAlignment.Left);
+            this.cheatLineListView.Columns.Add("Param2", 80, HorizontalAlignment.Left);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -31,7 +35,7 @@ namespace CCAPI_Cheat
             label5.Text = "Console Type: " ;
             label6.Text = "CELL Temp: " ;
             label7.Text = "RSX Temp: ";
-            this.EnableBoxes(false);
+            this.EnableBoxes(true);
             this.LoadCheatFile();
             foreach (object game in this.gameList)
                 this.comboGames.Items.Add(game);
@@ -232,6 +236,19 @@ namespace CCAPI_Cheat
             this.gbCheats.Enabled = active;
         }
 
-      
+        private void comboCheats_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Cheat cheat = (Cheat)this.comboCheats.SelectedItem;
+            this.cheatLineListView.Items.Clear();
+            foreach (CheatLine line in cheat.cheatLines)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Tag = line;
+                item.SubItems[0].Text = line.Opcode;
+                item.SubItems.Add(line.Param1);
+                item.SubItems.Add(line.Param2);
+                this.cheatLineListView.Items.Add(item);
+            }
+        }
     }
 }

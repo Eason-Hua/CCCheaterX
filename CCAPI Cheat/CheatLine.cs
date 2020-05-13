@@ -28,6 +28,8 @@ namespace CCAPI_Cheat
             {
                 case "00002000":
                     return this.Handle_00002000_Opcode(lastReturn);
+                case "00003000":
+                    return this.Handle_00003000_Opcode(lastReturn);
                 default:
                     int num = (int)MessageBox.Show("The cheat contains unimplemented opcodes and can't be applied");
                     return "00000000";
@@ -36,7 +38,8 @@ namespace CCAPI_Cheat
 
         public bool ContainsUnimplementedOpcodes()
         {
-            return !(this.Opcode == "00002000");
+            return !(this.Opcode == "00002000" ||
+                this.Opcode == "00003000");
         }
 
         private string Handle_00002000_Opcode(string lastReturn)
@@ -54,6 +57,28 @@ namespace CCAPI_Cheat
             catch (Exception ex)
             {
                 int num = (int)MessageBox.Show(ex.Message, "Error handling 00002000 Opcode", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+            return "00000000";
+        }
+
+        private string Handle_00003000_Opcode(string lastReturn)
+        {
+            try
+            {
+                uint uint32_1 = Convert.ToUInt32(this.Param1, 16);
+                uint uint32_2 = Convert.ToUInt32(this.Param2, 16);
+
+
+                if ((int)uint32_1 == 0)
+                    uint32_1 = Convert.ToUInt32(lastReturn, 16);
+
+                uint addr = Form1.ccapi.ReadMemoryU32(uint32_1);
+                addr += uint32_2;
+                return addr.ToString("X8");
+            }
+            catch (Exception ex)
+            {
+                int num = (int)MessageBox.Show(ex.Message, "Error handling 00003000 Opcode", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
             return "00000000";
         }
